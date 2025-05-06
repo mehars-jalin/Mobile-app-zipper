@@ -136,14 +136,15 @@ async function updateFileContent(file_path:any){
     console.log('Replacements done!');
 }
 export async function POST(req: Request) {
+    const uploadDir = '/tmp/uploads';
     const form = formidable({
-        uploadDir: "./public/metztlitaquerias",
+        uploadDir: `${uploadDir}/metztlitaquerias`,
         keepExtensions: true, 
     }); 
     try { 
         
         const original_zip_file_path =   path.join(process.cwd(), 'public/metztlitaqueriasOriginal.zip')
-        const extract_original_file_path   =   path.join(process.cwd(), 'public/metztlitaquerias');
+        const extract_original_file_path   =    path.join(uploadDir, '/metztlitaquerias')
         // Unzip original zipfile 
         const zip = new AdmZip(original_zip_file_path);
         zip.extractAllTo(extract_original_file_path, true);
@@ -155,7 +156,7 @@ export async function POST(req: Request) {
         zip_file_list.forEach(async (file_path)=>{ 
             const zip_file_path =   file_path 
             const zipPath       =   zip_file_path;
-            const extractPath   =   path.join(process.cwd(), 'public/metztlitaquerias/');
+            const extractPath   =  path.join(uploadDir, '/metztlitaquerias')
  
             // Unzip file 
             
@@ -165,8 +166,8 @@ export async function POST(req: Request) {
         })
         await updateFileContent(csv_file_path)
 
-        const zip_download_path   =   path.join(process.cwd(), 'public/metztlitaquerias.zip');
-        const zip_path            =   path.join(process.cwd(), 'public/metztlitaquerias');
+        const zip_download_path   =   path.join(uploadDir, '/metztlitaquerias.zip')
+        const zip_path            =   path.join(uploadDir, '/metztlitaquerias')
         const output = fs.createWriteStream(zip_download_path);
         const archive = archiver('zip', {
             zlib: { level: 9 } // Maximum compression

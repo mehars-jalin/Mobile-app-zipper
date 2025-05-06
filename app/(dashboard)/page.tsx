@@ -134,7 +134,7 @@ export default function CustomersPage() {
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     
                     {fileUpdate && !loading ? (
-                        <a href="/metztlitaquerias.zip" className="h-9 flex items-center gap-2">
+                        <a href="/tmp/uploads/metztlitaquerias.zip" className="h-9 flex items-center gap-2">
                             <Download className="h-4 w-4" />
                             <span>Download Zip</span>
                         </a>
