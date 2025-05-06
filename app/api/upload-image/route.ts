@@ -47,6 +47,9 @@ export async function POST(req: Request) {
         const zip = new AdmZip(original_zip_file_path);
         zip.extractAllTo(extract_original_file_path, true);
 
+        await fs.promises.rm(extract_original_file_path+'/images', { recursive: true, force: true });
+        await fs.promises.rm(extract_original_file_path+'/iosicons', { recursive: true, force: true });
+
         const nodeReq = await webRequestToNodeRequest(req);
         const [fields, files]:any = await form.parse(nodeReq as any);
         const zip_file_list =   [files.image_file[0]?.filepath]  
