@@ -40,7 +40,7 @@ export async function POST(req: Request) {
         keepExtensions: true, 
     }); 
     try { 
-        const original_zip_file_path =   path.join(process.cwd(), `${uploadDir}/metztlitaqueriasOriginal.zip`)
+        const original_zip_file_path =   path.join(process.cwd(), `public/metztlitaqueriasOriginal.zip`)
         const extract_original_file_path   =   path.join(process.cwd(), `${uploadDir}/metztlitaquerias`);
         // Unzip original zipfile 
         const zip = new AdmZip(original_zip_file_path);
