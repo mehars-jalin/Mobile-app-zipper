@@ -34,7 +34,7 @@ async function webRequestToNodeRequest(req: Request) {
     return nodeReq;
 }
 
-async function updateFileContent(file_path:any){
+async function updateFileContent(file_path:any,uploadDir:any){
     const csvContent = fs.readFileSync(file_path, 'utf8');
     const parsed = Papa.parse(csvContent, {
         header: true, // so you get array of objects
@@ -111,21 +111,21 @@ async function updateFileContent(file_path:any){
             if (typeof replacement_array[key] === 'object') {
                 const change_previous_data = data.file_change.split('\n')
                 replacement_array[key].forEach((change_content:any,key:any) => {
-                    targetContent = fs.readFileSync(path.join(process.cwd(), 'public/metztlitaquerias/')+data.file_path, 'utf8')
+                    targetContent = fs.readFileSync(path.join(uploadDir, '/metztlitaquerias/')+data.file_path, 'utf8')
                     targetContent = targetContent.replaceAll(change_content, change_previous_data[key])
-                    fs.writeFileSync(path.join(process.cwd(), 'public/metztlitaquerias/')+data.file_path, targetContent, 'utf8')
+                    fs.writeFileSync(path.join(uploadDir, '/metztlitaquerias/')+data.file_path, targetContent, 'utf8')
                 });
             }else{
                 if(key==2 || key == 3){
                     const escapedReplacement = replacement_array[key].replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s*');
                     let update_array_data = new RegExp(escapedReplacement, 's'); 
-                    targetContent = fs.readFileSync(path.join(process.cwd(), 'public/metztlitaquerias/')+data.file_path, 'utf8') 
+                    targetContent = fs.readFileSync(path.join(uploadDir, '/metztlitaquerias/')+data.file_path, 'utf8') 
                     targetContent = targetContent.replace(update_array_data, data.file_change) 
-                    fs.writeFileSync(path.join(process.cwd(), 'public/metztlitaquerias/')+data.file_path, targetContent, 'utf8')
+                    fs.writeFileSync(path.join(uploadDir, '/metztlitaquerias/')+data.file_path, targetContent, 'utf8')
                 }else{
-                    targetContent = fs.readFileSync(path.join(process.cwd(), 'public/metztlitaquerias/')+data.file_path, 'utf8') 
+                    targetContent = fs.readFileSync(path.join(uploadDir, '/metztlitaquerias/')+data.file_path, 'utf8') 
                     targetContent = targetContent.replaceAll(replacement_array[key], data.file_change) 
-                    fs.writeFileSync(path.join(process.cwd(), 'public/metztlitaquerias/')+data.file_path, targetContent, 'utf8')
+                    fs.writeFileSync(path.join(uploadDir, '/metztlitaquerias/')+data.file_path, targetContent, 'utf8')
                 }
             }
         }
@@ -148,7 +148,7 @@ export async function POST(req: Request) {
         // // Unzip original zipfile 
         // const zip = new AdmZip(original_zip_file_path);
         // zip.extractAllTo(extract_original_file_path, true);
-
+        
         const extract_original_file_path   =    path.join(uploadDir, '/metztlitaquerias')
 
         const nodeReq = await webRequestToNodeRequest(req);
@@ -166,7 +166,7 @@ export async function POST(req: Request) {
             zip.extractAllTo(extractPath, true);
             await fs.promises.rm(zip_file_path, { recursive: true, force: true });
         })
-        await updateFileContent(csv_file_path)
+        await updateFileContent(csv_file_path,uploadDir)
 
         const zip_download_path   =   path.join(uploadDir, '/metztlitaquerias.zip')
         const zip_path            =   path.join(uploadDir, '/metztlitaquerias')
@@ -196,6 +196,6 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ message: 'File changes successfully', files }); 
     } catch (error:any) { 
-        return NextResponse.json({ error: JSON.stringify(error) }, { status: 500 });
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
