@@ -42,19 +42,20 @@ export default function CustomersPage() {
             alert('Please upload all files.');
             return false;
         }
-        const data = new FormData();
-        data.append("image_file", files.file2);
+        const image_data = new FormData();
+        const csv_data = new FormData();
+        image_data.append("image_file", files.file2);
         setLoading(true); // Start loading
         
         try {
             const response = await fetch("/api/upload-image", {
                 method: "POST", 
-                body: data
+                body: image_data
             });
             await response.json(); 
-            data.append("icon_file", files.file1);
-            data.append("csv_file", files.file3);
-            const csv_response = await uploadCsv(data)
+            csv_data.append("icon_file", files.file1);
+            csv_data.append("csv_file", files.file3);
+            const csv_response = await uploadCsv(csv_data)
             alert(csv_response.message);
             setFileUpdate(true); 
         } catch (error) {
