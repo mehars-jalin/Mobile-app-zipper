@@ -135,12 +135,12 @@ async function updateFileContent(file_path:any){
 
     console.log('Replacements done!');
 }
-export async function POST(req: Request,res : Response) {
+export async function POST(req: Request) {
     const form = formidable({
         uploadDir: "./public/metztlitaquerias",
         keepExtensions: true, 
     }); 
-    try {
+    try { 
         
         const original_zip_file_path =   path.join(process.cwd(), 'public/metztlitaqueriasOriginal.zip')
         const extract_original_file_path   =   path.join(process.cwd(), 'public/metztlitaquerias');
@@ -149,7 +149,7 @@ export async function POST(req: Request,res : Response) {
         zip.extractAllTo(extract_original_file_path, true);
 
         const nodeReq = await webRequestToNodeRequest(req);
-        const [fields, files] = await form.parse(nodeReq as any);
+        const [fields, files]:any = await form.parse(nodeReq as any);
         const zip_file_list =   [files.icon_file[0]?.filepath, files.image_file[0]?.filepath] 
         const csv_file_path = files.csv_file[0]?.filepath
         zip_file_list.forEach(async (file_path)=>{ 

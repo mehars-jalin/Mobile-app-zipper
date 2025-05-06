@@ -47,5 +47,10 @@
     "singleQuote": true,
     "tabWidth": 2,
     "trailingComma": "none"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
+    "@types/formidable": "^3.4.5",
+    "eslint": "^9.26.0"
   }
 }

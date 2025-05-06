@@ -1,5 +1,3 @@
-'use server';
-
 import { redirect } from 'next/navigation'; // or use your router
 import { cookies } from 'next/headers'; 
 
@@ -22,3 +20,8 @@ export async function authenticateUser(email: string, password: string) {
     } 
   }
 }
+
+export const handlers = {
+  GET: async (req: Request) => { /* logic here */ },
+  POST: async (req: Request) => { /* logic here */ },
+};

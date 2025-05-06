@@ -43,7 +43,7 @@ export async function User() {
               action={async () => {
                 'use server';
                 const cookieStore = await cookies(); 
-                cookieStore.delete('logged-in', { path: '/login' }); 
+                cookieStore.delete('logged-in'); 
                 redirect('/login');
               }}
             >
