@@ -41,7 +41,8 @@ export async function POST(req: Request) {
     }); 
     try { 
         const original_zip_file_path =   path.join(process.cwd(), `public/metztlitaqueriasOriginal.zip`)
-        const extract_original_file_path   =   path.join(process.cwd(), `${uploadDir}/metztlitaquerias`);
+        const extract_original_file_path   =    path.join(uploadDir, '/metztlitaquerias')
+
         // Unzip original zipfile 
         const zip = new AdmZip(original_zip_file_path);
         zip.extractAllTo(extract_original_file_path, true);
@@ -52,7 +53,7 @@ export async function POST(req: Request) {
         zip_file_list.forEach(async (file_path)=>{ 
             const zip_file_path =   file_path 
             const zipPath       =   zip_file_path;
-            const extractPath   =   path.join(process.cwd(), `${uploadDir}/metztlitaquerias/`);
+            const extractPath   =   path.join(uploadDir, '/metztlitaquerias')
  
             // Unzip file
             const zip = new AdmZip(zipPath);
