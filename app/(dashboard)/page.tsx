@@ -29,25 +29,33 @@ export default function CustomersPage() {
         }
     }
  
+    async function uploadCsv(data:any){
+        const response = await fetch("/api/upload-csv", {
+            method: "POST", 
+            body: data
+        });
+        const result = await response.json();
+        return result
+    }
     const handleUpload = async () => {
         if (files.file1 == null || files.file2 == null || files.file3 == null) {
             alert('Please upload all files.');
             return false;
         }
         const data = new FormData();
-        data.append("icon_file", files.file1);
         data.append("image_file", files.file2);
-        data.append("csv_file", files.file3);
-        
         setLoading(true); // Start loading
         
         try {
-            const response = await fetch("/api/upload", {
+            const response = await fetch("/api/upload-image", {
                 method: "POST", 
                 body: data
             });
-            const result = await response.json();
-            alert(result.message);
+            await response.json(); 
+            data.append("icon_file", files.file1);
+            data.append("csv_file", files.file3);
+            const csv_response = await uploadCsv(data)
+            alert(csv_response.message);
             setFileUpdate(true); 
         } catch (error) {
             console.error(error);

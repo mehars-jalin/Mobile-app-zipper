@@ -150,7 +150,7 @@ export async function POST(req: Request) {
 
         const nodeReq = await webRequestToNodeRequest(req);
         const [fields, files]:any = await form.parse(nodeReq as any);
-        const zip_file_list =   [files.icon_file[0]?.filepath, files.image_file[0]?.filepath] 
+        const zip_file_list =   [files.icon_file[0]?.filepath] 
         const csv_file_path = files.csv_file[0]?.filepath
         zip_file_list.forEach(async (file_path)=>{ 
             const zip_file_path =   file_path 
