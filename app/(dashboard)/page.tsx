@@ -12,12 +12,6 @@ import { File, PlusCircle, Download } from 'lucide-react';
 
 const MAX_SIZE = 4.5 * 1024 * 1024; // 4.5 MB
 const MAX_SIZE_CSV = 2 * 1024 * 1024; // 2 MB
-const allowedMimeTypes = ['application/zip', 'application/x-zip-compressed'];
-const allowedCsvMimeTypes = [
-    'text/csv',
-    'application/vnd.ms-excel',
-  ];
-
 
 export default function CustomersPage() {
     const [files, setFiles] = useState({
@@ -52,6 +46,9 @@ export default function CustomersPage() {
             return false;
         } 
  
+        console.log('1____',(files.file1 as any).name)
+        console.log('2____',(files.file2 as any).name)
+        console.log('3____',(files.file3 as any).name)
         if (
             !(files.file1 as any).name?.endsWith('.zip') ||
             !(files.file2 as any).name?.endsWith('.zip') ||
