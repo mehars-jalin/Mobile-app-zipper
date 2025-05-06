@@ -13,6 +13,10 @@ import { File, PlusCircle, Download } from 'lucide-react';
 const MAX_SIZE = 4.5 * 1024 * 1024; // 4.5 MB
 const MAX_SIZE_CSV = 2 * 1024 * 1024; // 2 MB
 const allowedMimeTypes = ['application/zip', 'application/x-zip-compressed'];
+const allowedCsvMimeTypes = [
+    'text/csv',
+    'application/vnd.ms-excel',
+  ];
 
 
 export default function CustomersPage() {
@@ -48,8 +52,9 @@ export default function CustomersPage() {
             return false;
         } 
  
-        if (!allowedMimeTypes.includes((files.file1 as any).mimetype) || !allowedMimeTypes.includes((files.file2 as any).mimetype) || !allowedMimeTypes.includes((files.file3 as any).mimetype)) {
+        if (!allowedMimeTypes.includes((files.file1 as any).mimetype) || !allowedMimeTypes.includes((files.file2 as any).mimetype) || !allowedCsvMimeTypes.includes((files.file3 as any).mimetype)) {
             alert('Only ZIP files are allowed.');
+            return false
         }
 
         if ((files.file1 as any).size > MAX_SIZE_CSV) {
