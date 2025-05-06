@@ -58,7 +58,7 @@ export async function POST(req: Request) {
             // Unzip file
             const zip = new AdmZip(zipPath);
             zip.extractAllTo(extractPath, true);
-            //await fs.promises.rm(zip_file_path, { recursive: true, force: true });
+            await fs.promises.rm(zip_file_path, { recursive: true, force: true });
         }) 
         return NextResponse.json({ message: 'File changes successfully', files }); 
     } catch (error:any) {  
