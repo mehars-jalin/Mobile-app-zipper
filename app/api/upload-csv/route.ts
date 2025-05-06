@@ -9,6 +9,8 @@ const Papa = require('papaparse');
 const archiver = require('archiver');
 import { writeFile } from 'fs/promises';
 import MemoryStream from 'memory-streams';
+import { PassThrough } from 'stream';
+
 
 
 export const config = {
@@ -144,8 +146,7 @@ export async function POST(req: Request) {
         uploadDir: `${uploadDir}/metztlitaquerias`,
         keepExtensions: true, 
     }); 
-    try { 
-        
+    try {  
         // const original_zip_file_path =   path.join(process.cwd(), 'public/metztlitaqueriasOriginal.zip')
         // const extract_original_file_path   =    path.join(uploadDir, '/metztlitaquerias')
         // // Unzip original zipfile 
@@ -168,50 +169,50 @@ export async function POST(req: Request) {
             const zip = new AdmZip(zipPath);
             zip.extractAllTo(extractPath, true);
             await fs.promises.rm(zip_file_path, { recursive: true, force: true });
-        })
+        }) 
         await updateFileContent(csv_file_path,uploadDir)
 
         const zip_download_path   =   path.join(uploadDir, '/metztlitaquerias.zip')
         const zip_path            =   path.join(uploadDir, '/metztlitaquerias')
-
-        const memoryStream = new MemoryStream.WritableStream();
-        const archive = archiver('zip', { zlib: { level: 9 } });
-
-        archive.pipe(memoryStream);
-        archive.directory(zip_path, false);
-        await archive.finalize();
-
-        const zipBuffer = memoryStream.toBuffer();
-        const zipBlob = new Blob([zipBuffer], { type: 'application/zip' });
-
-        return new Response(zipBlob, {
-            headers: {
-              'Content-Type': 'application/zip',
-              'Content-Disposition': 'attachment; filename="metztlitaquerias.zip"',
-            },
-          });
-
-        // const output = fs.createWriteStream(zip_download_path);
-        // const archive = archiver('zip', {
-        //     zlib: { level: 9 }
-        // });
-        // output.on('close', async function () {
-        //     console.log(`Archive has been finalized and the file is ${archive.pointer()} bytes.`);
-        //     await fs.promises.rm(extract_original_file_path, { recursive: true, force: true });
-        // });
-        // archive.on('error', function (err:any) {
-        //     console.log('Compress error : ',err);
-        //     throw err;
-        // });
-        // archive.on('progress', function (progress:any) {
-        //     //console.log(`Compression Progress: ${progress.entries.processed} entries processed, ${progress.fs.processedBytes} bytes written.`);
-        // });
-        // archive.pipe(output);
-        // archive.directory(zip_path, false);
-        // archive.finalize();
  
 
-        return NextResponse.json({ message: 'File changes successfully', files, zip_download_path }); 
+        const output = fs.createWriteStream(zip_download_path);
+        const archive = archiver('zip', {
+            zlib: { level: 9 }
+        });
+
+        archive.pipe(output);
+        archive.directory(zip_path, false);
+
+        const archiveFinalizePromise = new Promise<void>((resolve, reject) => {
+            output.on('close', async () => {
+              console.log(`Zip created successfully: ${archive.pointer()} bytes`);
+              await fs.promises.rm(extract_original_file_path, { recursive: true, force: true });
+              resolve();
+            });
+            archive.on('error', (err:any) => {
+              console.error('Archiver error:', err);
+              reject(err);
+            });
+        });
+
+        archive.finalize();
+
+        await archiveFinalizePromise; 
+         
+        const filePath = path.join(uploadDir, 'metztlitaquerias.zip')
+        await fs.promises.access(filePath, fs.constants.F_OK)
+        const fileBuffer = await fs.promises.readFile(filePath)
+        
+        return new Response(fileBuffer, {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/zip',
+                'Content-Disposition': 'attachment; filename="metztlitaquerias.zip"',
+            }
+        }); 
+
+        //return NextResponse.json({ message: 'File changes successfully', files, zip_download_path }); 
     } catch (error:any) { 
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

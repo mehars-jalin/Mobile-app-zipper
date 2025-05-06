@@ -34,7 +34,7 @@ export default function CustomersPage() {
             method: "POST", 
             body: data
         });
-        const result = await response.json();
+        const result = await response.blob();
         return result
     }
     const handleUpload = async () => {
@@ -53,14 +53,25 @@ export default function CustomersPage() {
                 body: image_data
             });
             await response.json(); 
+
             csv_data.append("icon_file", files.file1);
             csv_data.append("csv_file", files.file3);
-            const csv_response = await uploadCsv(csv_data)
-            alert(csv_response.message);
+
+            const blob = await uploadCsv(csv_data) 
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'metztlitaquerias.zip';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            alert('File changes successfully');
             setFileUpdate(true); 
-        } catch (error) {
+        } catch (error:any) {
             console.error(error);
-            alert("Upload failed.");
+            alert(error.message);
         } finally {
             setLoading(false); // Stop loading after the request
         }
