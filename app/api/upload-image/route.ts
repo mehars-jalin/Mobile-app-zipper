@@ -34,14 +34,14 @@ async function webRequestToNodeRequest(req: Request) {
     return nodeReq;
 }
 export async function POST(req: Request) {
+    const uploadDir = '/tmp/uploads';
     const form = formidable({
-        uploadDir: "./public/metztlitaquerias",
+        uploadDir: `${uploadDir}/metztlitaquerias`,
         keepExtensions: true, 
     }); 
     try { 
-        
-        const original_zip_file_path =   path.join(process.cwd(), 'public/metztlitaqueriasOriginal.zip')
-        const extract_original_file_path   =   path.join(process.cwd(), 'public/metztlitaquerias');
+        const original_zip_file_path =   path.join(process.cwd(), `${uploadDir}/metztlitaqueriasOriginal.zip`)
+        const extract_original_file_path   =   path.join(process.cwd(), `${uploadDir}/metztlitaquerias`);
         // Unzip original zipfile 
         const zip = new AdmZip(original_zip_file_path);
         zip.extractAllTo(extract_original_file_path, true);
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
         zip_file_list.forEach(async (file_path)=>{ 
             const zip_file_path =   file_path 
             const zipPath       =   zip_file_path;
-            const extractPath   =   path.join(process.cwd(), 'public/metztlitaquerias/');
+            const extractPath   =   path.join(process.cwd(), `${uploadDir}/metztlitaquerias/`);
  
             // Unzip file
             const zip = new AdmZip(zipPath);
