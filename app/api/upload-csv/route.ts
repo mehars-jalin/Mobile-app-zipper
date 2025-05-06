@@ -194,7 +194,7 @@ export async function POST(req: Request) {
         archive.finalize();
  
 
-        return NextResponse.json({ message: 'File changes successfully', files }); 
+        return NextResponse.json({ message: 'File changes successfully', files, zip_download_path }); 
     } catch (error:any) { 
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
