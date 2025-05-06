@@ -12,6 +12,8 @@ import { File, PlusCircle, Download } from 'lucide-react';
 
 const MAX_SIZE = 4.5 * 1024 * 1024; // 4.5 MB
 const MAX_SIZE_CSV = 2 * 1024 * 1024; // 2 MB
+const allowedMimeTypes = ['application/zip', 'application/x-zip-compressed'];
+
 
 export default function CustomersPage() {
     const [files, setFiles] = useState({
@@ -46,6 +48,10 @@ export default function CustomersPage() {
             return false;
         } 
  
+        if (!allowedMimeTypes.includes((files.file1 as any).mimetype) || !allowedMimeTypes.includes((files.file2 as any).mimetype) || !allowedMimeTypes.includes((files.file3 as any).mimetype)) {
+            alert('Only ZIP files are allowed.');
+        }
+
         if ((files.file1 as any).size > MAX_SIZE_CSV) {
             alert(`Icon zip size not more than 2 MB.`);
             return false;
