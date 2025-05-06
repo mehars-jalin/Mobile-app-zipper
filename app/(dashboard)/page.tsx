@@ -52,10 +52,15 @@ export default function CustomersPage() {
             return false;
         } 
  
-        if (!allowedMimeTypes.includes((files.file1 as any).mimetype) || !allowedMimeTypes.includes((files.file2 as any).mimetype) || !allowedCsvMimeTypes.includes((files.file3 as any).mimetype)) {
-            alert('Only ZIP files are allowed.');
-            return false
+        if (
+            !(files.file1 as any).name?.endsWith('.zip') ||
+            !(files.file2 as any).name?.endsWith('.zip') ||
+            !(files.file3 as any).name?.endsWith('.csv')
+        ) {
+            alert('Only ZIP and CSV files are allowed.');
+            return false;
         }
+          
 
         if ((files.file1 as any).size > MAX_SIZE_CSV) {
             alert(`Icon zip size not more than 2 MB.`);
