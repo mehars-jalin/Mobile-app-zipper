@@ -143,11 +143,13 @@ export async function POST(req: Request) {
     }); 
     try { 
         
-        const original_zip_file_path =   path.join(process.cwd(), 'public/metztlitaqueriasOriginal.zip')
+        // const original_zip_file_path =   path.join(process.cwd(), 'public/metztlitaqueriasOriginal.zip')
+        // const extract_original_file_path   =    path.join(uploadDir, '/metztlitaquerias')
+        // // Unzip original zipfile 
+        // const zip = new AdmZip(original_zip_file_path);
+        // zip.extractAllTo(extract_original_file_path, true);
+
         const extract_original_file_path   =    path.join(uploadDir, '/metztlitaquerias')
-        // Unzip original zipfile 
-        const zip = new AdmZip(original_zip_file_path);
-        zip.extractAllTo(extract_original_file_path, true);
 
         const nodeReq = await webRequestToNodeRequest(req);
         const [fields, files]:any = await form.parse(nodeReq as any);
@@ -194,6 +196,6 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ message: 'File changes successfully', files }); 
     } catch (error:any) { 
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: JSON.stringify(error) }, { status: 500 });
     }
 }
