@@ -185,7 +185,7 @@ export async function POST(req: Request) {
         archive.on('progress', function (progress:any) {
             //console.log(`Compression Progress: ${progress.entries.processed} entries processed, ${progress.fs.processedBytes} bytes written.`);
         });
-        
+         
         archive.pipe(output);
         archive.directory(zip_path, false);
         archive.finalize();

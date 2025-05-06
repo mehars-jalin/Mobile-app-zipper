@@ -7,6 +7,9 @@ import path from 'path';
 import fs from 'fs';
 const Papa = require('papaparse');
 const archiver = require('archiver');
+import { writeFile } from 'fs/promises';
+import MemoryStream from 'memory-streams';
+
 
 export const config = {
   api: {
@@ -170,28 +173,42 @@ export async function POST(req: Request) {
 
         const zip_download_path   =   path.join(uploadDir, '/metztlitaquerias.zip')
         const zip_path            =   path.join(uploadDir, '/metztlitaquerias')
-        const output = fs.createWriteStream(zip_download_path);
-        const archive = archiver('zip', {
-            zlib: { level: 9 } // Maximum compression
-        });
 
-        output.on('close', async function () {
-            console.log(`Archive has been finalized and the file is ${archive.pointer()} bytes.`);
-            await fs.promises.rm(extract_original_file_path, { recursive: true, force: true });
-        });
+        const memoryStream = new MemoryStream.WritableStream();
+        const archive = archiver('zip', { zlib: { level: 9 } });
 
-        archive.on('error', function (err:any) {
-            console.log('Compress error : ',err);
-            throw err;
-        });
-
-        archive.on('progress', function (progress:any) {
-            //console.log(`Compression Progress: ${progress.entries.processed} entries processed, ${progress.fs.processedBytes} bytes written.`);
-        });
-        
-        archive.pipe(output);
+        archive.pipe(memoryStream);
         archive.directory(zip_path, false);
-        archive.finalize();
+        await archive.finalize();
+
+        const zipBuffer = memoryStream.toBuffer();
+        const zipBlob = new Blob([zipBuffer], { type: 'application/zip' });
+
+        return new Response(zipBlob, {
+            headers: {
+              'Content-Type': 'application/zip',
+              'Content-Disposition': 'attachment; filename="metztlitaquerias.zip"',
+            },
+          });
+
+        // const output = fs.createWriteStream(zip_download_path);
+        // const archive = archiver('zip', {
+        //     zlib: { level: 9 }
+        // });
+        // output.on('close', async function () {
+        //     console.log(`Archive has been finalized and the file is ${archive.pointer()} bytes.`);
+        //     await fs.promises.rm(extract_original_file_path, { recursive: true, force: true });
+        // });
+        // archive.on('error', function (err:any) {
+        //     console.log('Compress error : ',err);
+        //     throw err;
+        // });
+        // archive.on('progress', function (progress:any) {
+        //     //console.log(`Compression Progress: ${progress.entries.processed} entries processed, ${progress.fs.processedBytes} bytes written.`);
+        // });
+        // archive.pipe(output);
+        // archive.directory(zip_path, false);
+        // archive.finalize();
  
 
         return NextResponse.json({ message: 'File changes successfully', files, zip_download_path }); 
