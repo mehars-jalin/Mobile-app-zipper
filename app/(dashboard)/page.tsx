@@ -10,6 +10,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { File, PlusCircle, Download } from 'lucide-react';
 
+const MAX_SIZE = 4.5 * 1024 * 1024; // 4.5 MB
+const MAX_SIZE_CSV = 2 * 1024 * 1024; // 4 MB
+
 export default function CustomersPage() {
     const [files, setFiles] = useState({
         file1: null,
@@ -37,9 +40,21 @@ export default function CustomersPage() {
         const result = await response.blob();
         return result
     }
-    const handleUpload = async () => {
+    const handleUpload = async () => { 
         if (files.file1 == null || files.file2 == null || files.file3 == null) {
             alert('Please upload all files.');
+            return false;
+        } 
+        if (files.file1.size > MAX_SIZE_CSV) {
+            alert(`Icon zip size not more than 2 MB.`);
+            return false;
+        }
+        if (files.file2.size > MAX_SIZE) {
+            alert(`Image zip size not more than 4 MB.`);
+            return false;
+        }
+        if (files.file3.size > MAX_SIZE_CSV) {
+            alert(`CSV zip size not more than 2 MB.`);
             return false;
         }
         const image_data = new FormData();
