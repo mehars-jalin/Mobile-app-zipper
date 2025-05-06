@@ -60,7 +60,7 @@ export async function POST(req: Request) {
             //await fs.promises.rm(zip_file_path, { recursive: true, force: true });
         }) 
         return NextResponse.json({ message: 'File changes successfully', files }); 
-    } catch (error) {  
-        return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    } catch (error:any) {  
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
