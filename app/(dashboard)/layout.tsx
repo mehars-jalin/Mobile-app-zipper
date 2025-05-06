@@ -53,8 +53,12 @@ export default function DashboardLayout({
           </main>
         </div>
         <Analytics />
-        <div className="flex flex-col sm:gap-4 sm:pl-14 text-center mt-5" style={{marginTop:'200px'}}>Kulaapp</div>
-       
+        <div
+          className="flex flex-col sm:gap-4 sm:pl-14 text-center mt-5"
+          style={{ marginTop: 'auto' }}
+        >
+          © Kulaapp
+        </div>
       </main>
     </Providers>
   );
@@ -75,7 +79,6 @@ function DesktopNav() {
         <NavItem href="#" label="Add Client">
           <Home className="h-5 w-5" />
         </NavItem>
-        
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
         <Tooltip>
@@ -120,7 +123,6 @@ function MobileNav() {
             <Home className="h-5 w-5" />
             Add Client
           </Link>
-           
         </nav>
       </SheetContent>
     </Sheet>
