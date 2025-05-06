@@ -192,7 +192,7 @@ export async function POST(req: Request) {
  
 
         return NextResponse.json({ message: 'File changes successfully', files }); 
-    } catch (error) { 
-        return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    } catch (error:any) { 
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
