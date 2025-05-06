@@ -23,7 +23,7 @@ export default function CustomersPage() {
     const [loading, setLoading] = useState(false); // Loader state
 
     const handleFileChange = (e: any, key: any) => {
-        const selectedFile = e.target.files[0];
+        const selectedFile:any = e.target.files[0];
         if (selectedFile) {
             setFiles(prev => ({
                 ...prev,
@@ -45,15 +45,16 @@ export default function CustomersPage() {
             alert('Please upload all files.');
             return false;
         } 
-        if (files.file1.size > MAX_SIZE_CSV) {
+ 
+        if ((files.file1 as any).size > MAX_SIZE_CSV) {
             alert(`Icon zip size not more than 2 MB.`);
             return false;
         }
-        if (files.file2.size > MAX_SIZE) {
+        if ((files.file2 as any).size > MAX_SIZE) {
             alert(`Image zip size not more than 4 MB.`);
             return false;
         }
-        if (files.file3.size > MAX_SIZE_CSV) {
+        if ((files.file3 as any).size > MAX_SIZE_CSV) {
             alert(`CSV zip size not more than 2 MB.`);
             return false;
         }
