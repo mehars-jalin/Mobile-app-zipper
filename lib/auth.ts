@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation'; // or use your router
 import { cookies } from 'next/headers'; 
 
 export async function authenticateUser(email: string, password: string) {
-  const STATIC_EMAIL = 'metztlitaquerias@gmail.com';
-  const STATIC_PASSWORD = 'metztlitaquerias123@#';
+  const STATIC_EMAIL = 'kulaapp@gmail.com';
+  const STATIC_PASSWORD = '6Ddl4ALh9o[1';
   if (email === STATIC_EMAIL && password === STATIC_PASSWORD) {
     console.log('Login successful!');
     const cookieStore = await cookies();

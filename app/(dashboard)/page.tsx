@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { File, PlusCircle, Download } from 'lucide-react';
 
 const MAX_SIZE = 4.5 * 1024 * 1024; // 4.5 MB
-const MAX_SIZE_CSV = 2 * 1024 * 1024; // 4 MB
+const MAX_SIZE_CSV = 2 * 1024 * 1024; // 2 MB
 
 export default function CustomersPage() {
     const [files, setFiles] = useState({

@@ -53,6 +53,8 @@ export default function DashboardLayout({
           </main>
         </div>
         <Analytics />
+        <div className="flex flex-col sm:gap-4 sm:pl-14 text-center mt-5" style={{marginTop:'200px'}}>Kulaapp</div>
+       
       </main>
     </Providers>
   );
