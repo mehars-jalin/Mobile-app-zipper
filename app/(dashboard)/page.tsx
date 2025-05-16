@@ -46,15 +46,15 @@ export default function CustomersPage() {
             return false;
         } 
  
-        console.log('1____',(files.file1 as any).name)
-        console.log('2____',(files.file2 as any).name)
-        console.log('3____',(files.file3 as any).name)
+        // console.log('1____',(files.file1 as any).name)
+        // console.log('2____',(files.file2 as any).name)
+        // console.log('3____',(files.file3 as any).name)
         if (
-            !(files.file1 as any).name?.endsWith('.zip') ||
+            !(files.file1 as any).name?.endsWith('.png') ||
             !(files.file2 as any).name?.endsWith('.zip') ||
             !(files.file3 as any).name?.endsWith('.csv')
         ) {
-            alert('Only ZIP and CSV files are allowed.');
+            alert('Only ZIP and CSV and PNG files are allowed.');
             return false;
         }
           
@@ -119,7 +119,7 @@ export default function CustomersPage() {
                     {/* Icon File */}
                     <div className="flex flex-col items-center">
                         <label htmlFor="file-upload-1" className="text-sm font-medium mb-2">
-                            Icons Zip
+                            IOS Icon Png
                         </label>
                         <input
                             id="file-upload-1"
