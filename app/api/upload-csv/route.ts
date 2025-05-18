@@ -10,6 +10,7 @@ const archiver = require('archiver');
 import { writeFile } from 'fs/promises';
 import MemoryStream from 'memory-streams';
 import { PassThrough } from 'stream';
+import sharp from "sharp";
 
 
 
@@ -140,6 +141,81 @@ async function updateFileContent(file_path:any,uploadDir:any){
 
     console.log('Replacements done!');
 }
+
+
+async function createIosImages(files:any) {
+    const uploadDir = '/tmp/uploads';
+    try{
+        const ext = "png";
+        const sizes = [
+        { name: '20x20', width: 20 ,height: 20},
+        { name: '29x29', width: 29 ,height: 29},
+        { name: '40x40', width: 40 ,height: 40},
+        { name: '50x50', width: 50 ,height: 50},
+        { name: '57x57', width: 57 ,height: 57},
+        { name: '58x58', width: 58 ,height: 58},
+        { name: '60x60', width: 60 ,height: 60},
+        { name: '72x72', width: 72 ,height: 72},
+        { name: '76x76', width: 76 ,height: 76},
+        { name: '80x80', width: 80 ,height: 80},
+        { name: '87x87', width: 87 ,height: 87},
+        { name: '100x100', width: 100 ,height: 100},
+        { name: '114x114', width: 114 ,height: 114},
+        { name: '120x120', width: 120 ,height: 120},
+        { name: '144x144', width: 144 ,height: 144},
+        { name: '152x152', width: 152 ,height: 152},
+        { name: '164x164', width: 164 ,height: 164},
+        { name: '180x180', width: 180 ,height: 180},
+        { name: '1024x1024', width: 1024 ,height: 1024}
+        ];
+        const fileBuffer = await fs.promises.readFile(files.icon_file[0]?.filepath);
+         
+
+        const newIconDir = path.join(uploadDir, '/iosicons/iosicons');
+        fs.mkdirSync(newIconDir, { recursive: true });
+
+        const resizeIcons = sizes.map((size) => {
+            const outputPath = path.join(newIconDir, `${size.name}.${ext}`);
+            return sharp(fileBuffer)
+                .resize({ width: size.width, height: size.height })
+                .toFile(outputPath);
+        });
+
+        await Promise.all(resizeIcons);
+
+        const zip_download_path   =   path.join(uploadDir, '/iosicons.zip')
+        const zip_path            =   path.join(uploadDir, '/iosicons')
+ 
+        const output = fs.createWriteStream(zip_download_path);
+        const archive = archiver('zip', {
+            zlib: { level: 9 }
+        });
+
+        archive.pipe(output);
+        archive.directory(zip_path, false);
+        const archiveFinalizePromise = new Promise<void>((resolve, reject) => {
+            output.on('close', async () => {
+              console.log(`Zip created successfully: ${archive.pointer()} bytes`);
+              await fs.promises.rm(zip_path, { recursive: true, force: true });
+              resolve();
+            });
+            archive.on('error', (err:any) => {
+              console.error('Archiver error:', err);
+              reject(err);
+            });
+        });
+        archive.finalize();
+        await archiveFinalizePromise;
+         
+        console.log('IOS Image done!');
+        return true;
+    } catch (error:any) { 
+        console.error('Error IOS:', error.message);
+        return false;
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
 export async function POST(req: Request) {
     const uploadDir = '/tmp/uploads';
     const form = formidable({
@@ -156,8 +232,12 @@ export async function POST(req: Request) {
         const extract_original_file_path   =    path.join(uploadDir, '/metztlitaquerias')
 
         const nodeReq = await webRequestToNodeRequest(req);
+        
         const [fields, files]:any = await form.parse(nodeReq as any);
-        const zip_file_list =   [files.icon_file[0]?.filepath] 
+        await createIosImages(files);
+        //const zip_file_list =   [files.icon_file[0]?.filepath] 
+        const zip_file_list = [path.join(uploadDir, 'iosicons.zip')];
+        console.log('zip_file_list___',zip_file_list); 
         const csv_file_path = files.csv_file[0]?.filepath
         zip_file_list.forEach(async (file_path)=>{ 
             const zip_file_path =   file_path 
@@ -188,6 +268,7 @@ export async function POST(req: Request) {
             output.on('close', async () => {
               console.log(`Zip created successfully: ${archive.pointer()} bytes`);
               await fs.promises.rm(extract_original_file_path, { recursive: true, force: true });
+              //await fs.promises.rm(zip_file_list[0], { recursive: true, force: true });
               resolve();
             });
             archive.on('error', (err:any) => {
@@ -212,7 +293,7 @@ export async function POST(req: Request) {
             }
         }); 
 
-        //return NextResponse.json({ message: 'File changes successfully', files, zip_download_path }); 
+        //return NextResponse.json({ message: 'File changes successfully' }); 
     } catch (error:any) { 
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
