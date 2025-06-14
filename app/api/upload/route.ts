@@ -51,7 +51,7 @@ async function updateFileContent(file_path:any){
             get_file_updation.push({
                 Index: key+1,
                 file_path : file_path,
-                file_change : data['Hometowne Pizza'],
+                file_change : data['Values'],
                 line_change : data['Line(s)']
             })
         }
